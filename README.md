@@ -10,12 +10,6 @@ Further information about the model can be obtained here: (reference)
 
 **Code:** The model can be executed through "SharedPreferenceModel", which is the main script. Model options can be set at the beginning through the "opt" struct. Parameters are set below with the "p" struct.
 
-**Copyright**
-Copyright (C) 2024, Torben Schucht and Bernd Blasius
-
-This software may be used, copied, or redistributed as it is not sold and this copyright notice
-is reproduced on each copy made. This routine is provided as is without any express or implied warranties whatsoever.
-
 Notice: Please acknowledge the use of the above model in any publications.
 Reference: Schucht, T. and Blasius, B., 2024: Shared preferences along stress gradients: how a growth-tolerance trade-off drives unimodal diversity and trait lumping". *Not published yet*
 
