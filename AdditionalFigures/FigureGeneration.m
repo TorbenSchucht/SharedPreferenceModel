@@ -76,12 +76,13 @@ end
 %% Survival matrix (500 Species simulation)
 load('500SpeciesFull.mat')
 
+figure(4)
 subplot(2,5,4:5)
 ThetaValues = NSurvivalTime.(3);
 SurvivedSpecies = NSurvivalTime.SpeciesID(NSurvivalTime.Survival_Time == 1000000);
 NxPad = N(:,0.25*p.L+1:0.75*p.L); % N without outside pad
-[~,Nmax] = max(N,[],2);
-scatter(xProj(Nmax),ThetaValues(SurvivedSpecies),20,'filled')
+[~,Nmax] = max(NxPad,[],2);
+scatter(xProj(Nmax*2),ThetaValues(SurvivedSpecies),20,'filled')
 xlabel('x_{max}')
 ylabel('\theta')
 text([0.05, 0.25, 0.4, 0.5, 0.65, 0.85], [3, 2.1, 1.5, 1.1, 0.8, 0.3], ["1", "13", "23", "29", "19","6"], "FontSize", 10);
@@ -96,12 +97,14 @@ for i = 1:TotalSp
    hold on
 end
 hold off
+ax = gca;
+ax.InnerPosition(1) = 0.06;
+pbaspect([1, 0.78, 0.78])
 xlabel('log(t)')
 ylabel('\theta')
 xlim([3,6])
 
 subplot(2,5,9:10)
-xProj = linspace(0,1,p.L);
 plotCommunity(xProj,N,t)
 xlabel('x')
 hold on
@@ -126,6 +129,9 @@ xlabel('log(t)')
 hold on
 yyaxis right
 plot(log10(HPoints),HGlobal,'LineWidth',2)
+ax = gca;
+ax.InnerPosition(1) = 0.06;
+pbaspect([1, 0.78, 0.78])
 ylabel('D_{Global}')
 
 
@@ -133,6 +139,7 @@ ylabel('D_{Global}')
 
 load('IncreasingDispersalSingleSimulations')
 
+figure(5)
 % Communities for different sigma
 CommIdx = [1, 30, 100];
 SubplotIdx = [5,3,1];
