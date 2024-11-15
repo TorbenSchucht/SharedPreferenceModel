@@ -17,14 +17,9 @@ opt = struct(); % Options struct
 p = struct();   % Parameter struct
 
 %% Options %%
-opt.plotDispersalKernel = 'n';          % Disp. Kernel
 opt.plotGrowthFunctions = 'n';          % All growth functions
-opt.plotCommunityAtGivenTime = 'n';     % Density curves at given times
-opt.CommunityPoints = [1,2,5,30,10000,100000]; % timepoints where species community is plotted (only if opt.plotCommunityAtGivenTimes is y)
-opt.plotTemporalDensity = 'n';          % Species densities over t
-opt.plotSurvivalTime = 'n';             % Survival time based on trade-off value theta
+opt.CommunityPoints = [1,2,5,30,10000,100000]; % timepoints where species community is plotted
 opt.SpeciesExtinction = 'y';            % Enable species extinction
-opt.LivePlot = 'n';                     % Create community plot during simulation (Animation)
 
 % Parameters
 p.beta = -0.7;                        % Shape of trade-off curve
@@ -39,6 +34,7 @@ p.l = 1.6;                            % Spatial size of gradient (from -l/2 to  
 p.Ncrit = 0.01;                       % Extinction threshold
 p.N0 = 0.01;                          % Initial density
 p.sigma = 0.03;                       % Dispersal width
+
 
 % Initialize space
 p.xOpt = -p.l/2;                        % Position of optimal growth
@@ -70,11 +66,12 @@ for t = 1:p.t_iter
     end
 
     % Plot densities during simulation
-     if opt.LivePlot == 'y' || any(opt.CommunityPoints == p.t)
+     if any(opt.CommunityPoints == p.t)
          k.idx = k.idx + 1;
          figure(1)
          subplot(1,length(opt.CommunityPoints),k.idx)
          CommunityPlot(p,N)
+         FigurePosition(gcf, 0.8, 0.3)
          k.NDist(p.NIndex, : ,k.idx ) = (N(:,p.L*0.25+1:0.75*p.L) > 0.1); % Distributions larger than 0.1
          k.NSaved(p.NIndex,: ,k.idx ) = N; % Save N
      end
@@ -104,16 +101,16 @@ end
 %% PLOT RESULTS %%
 %%%%%%%%%%%%%%%%%%
 
-% Plot Community at first 3 points (set in opt.CommunityPoints)
+% Plot Community at 3 points (1,3,5) (set in opt.CommunityPoints)
 figure()
 subplot(3,2,1)
 p.t = opt.CommunityPoints(1);
 CommunityPlot(p,k.NSaved(:,:,1))
 subplot(3,2,3)
-p.t = opt.CommunityPoints(2);
+p.t = opt.CommunityPoints(3);
 CommunityPlot(p,k.NSaved(:,:,2))
 subplot(3,2,5)
-p.t = opt.CommunityPoints(3);
+p.t = opt.CommunityPoints(5);
 CommunityPlot(p, k.NSaved(:,:,3))
 % Plot temporal diversity pattern
 subplot(3,2,[2,4,6])
@@ -127,9 +124,16 @@ subplot(2,2,2)
 PlotSpeciesClusters(p,N)
 subplot(2,2,3)
 PlotExtinctionBins(p,k,spTraitTable)
+subplot(2,2,4)
+p.t = p.t_iter;
+CommunityPlot(p,N)
+yyaxis right
+plot(p.xProj(1:4:length(p.xProj)), DL, 'b', 'LineWidth', 2)
+ax = gca;
+ax.YAxis(2).Color = 'b';
+ylabel('D_{l}')
 
 close(k.wb) % Close waitbar
-
 
 
 %%%%%%%%%%%%%%%
@@ -170,12 +174,32 @@ ExtEvents = spTraitTable.(2);
 ExtEvents = ExtEvents(spTraitTable.(2) < p.t_iter);
 histogram(log10(ExtEvents),100)
 ylabel('Extinctions')
-xlabel('t')
+xlabel('log(t)')
 
 % Add Global diversity
 hold on
 yyaxis right
 plot(log10(k.DPoints),k.DGlobal,'LineWidth',2)
 ylabel('D_{Global}')
+
+end
+
+function FigurePosition(figure,PercWidth, PercHeight)
+% Function to change figure position to centered with PercWidth and
+% PercHeight as figure size relative to screensize
+
+% Obtain screen size
+screenSize = get(0, 'ScreenSize'); 
+
+figWidth = PercWidth * screenSize(3);  % percentage of screen width
+figHeight = PercHeight * screenSize(4); % percentage of screen height
+
+% Set figure position (centered on the screen)
+figX = (screenSize(3) - figWidth) / 2;
+figY = (screenSize(4) - figHeight) / 2;
+
+% Update position
+figureHandle = figure;
+set(figureHandle, 'Position', [figX, figY, figWidth, figHeight]);
 
 end
