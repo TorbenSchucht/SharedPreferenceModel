@@ -141,14 +141,15 @@ load('IncreasingDispersalSingleSimulations')
 
 figure(5)
 % Communities for different sigma
-CommIdx = [1, 30, 100];
+CommIdx = [1, 2, 3];
 SubplotIdx = [5,3,1];
+sigmaIncreaseSelected = [0.001, 0.03, 0.1];
 for i = 1:length(CommIdx)
     subplot(3,2,SubplotIdx(i))
     plotCommunity(xProj,NendMatrix(:,:,CommIdx(i)),t)
-    ttlString = sprintf('\\sigma = %.g \n t = 10^{%d}', sigmaIncrease(CommIdx(i)),log10(t));
+    ttlString = sprintf('\\sigma = %.g \n t = 10^{%d}', sigmaIncreaseSelected(CommIdx(i)),log10(t));
     if i == 1
-       ttlString = sprintf('\\sigma = %.g \n t = 10^{%d}', sigmaIncrease(CommIdx(i)),log10(t));
+       ttlString = sprintf('\\sigma = %.g \n t = 10^{%d}', sigmaIncreaseSelected(CommIdx(i)),log10(t));
     end
     xL=xlim;
     yL=ylim;
@@ -168,7 +169,6 @@ end
 % Colored diversity for different sigmas
 subplot(3,2,[2,4,6])
 cutoff = 100; % Stop point
-HLocalEnd = squeeze(HLocalMatrix(:,99,1:cutoff));
 y = sigmaIncrease(1:cutoff);
 pcolor(xP,y,HLocalEnd')
 shading interp
